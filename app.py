@@ -10,20 +10,10 @@ import uuid
 st.set_page_config(page_title="EasyBook Pro", layout="centered")
 
 # -------------------------
-# STYLING (GLASS CARDS, BUTTONS, TITLE)
+# STYLING (BUTTONS, TITLE, FORM FIELDS)
 # -------------------------
 st.markdown("""
 <style>
-.main-card {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(12px);
-    padding: 2rem;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.2);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-}
-
 h1 {
     text-align: center;
     color: #4B0082;
@@ -47,8 +37,9 @@ h1 {
     font-weight: 600;
 }
 
-.stTextInput input, .stTextArea textarea, .stSelectbox select {
+.stTextInput input, .stTextArea textarea, .stSelectbox select, .stMultiselect select {
     background-color: rgba(255,255,255,0.9);
+    margin-bottom: 0.5rem;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -69,26 +60,14 @@ menu = st.sidebar.selectbox("Navigation", ["Order Sample", "Admin Panel"])
 # -------------------------
 if menu == "Order Sample":
 
-    st.markdown('<div class="main-card">', unsafe_allow_html=True)
-
     # CONTACT DETAILS
     st.subheader("📇 Contact Details")
-    col1, col2 = st.columns(2)
-    with col1:
-        client_name = st.text_input("Full Name")
-    with col2:
-        client_email = st.text_input("Email Address")
+    client_name = st.text_input("Full Name")
+    client_email = st.text_input("Email Address")
 
     # BOOK IDEA
     st.subheader("💡 Book Idea")
-    idea_option = st.radio(
-        "Do you have a book idea?",
-        ["Yes, I have an idea", "No, find me a profitable niche"],
-        horizontal=True
-    )
-    idea_description = ""
-    if idea_option == "Yes, I have an idea":
-        idea_description = st.text_area("Describe your idea")
+    idea_description = st.text_area("Describe your book idea")
 
     # BOOK DETAILS
     st.subheader("📖 Book Details")
@@ -130,6 +109,8 @@ if menu == "Order Sample":
 
         if not client_name or not client_email:
             st.error("Please enter your name and email.")
+        elif not idea_description:
+            st.error("Please describe your book idea.")
         elif not terms:
             st.error("You must accept the terms.")
         else:
@@ -146,8 +127,8 @@ Date: {timestamp}
 Client: {client_name}
 Email: {client_email}
 
-Idea Option: {idea_option}
-Idea Description: {idea_description}
+Book Idea:
+{idea_description}
 
 Book Type: {book_type}
 Genre: {genre}
@@ -181,8 +162,8 @@ Thank you for choosing EasyBook Pro!
                 # SMTP CONFIG
                 smtp_server = "smtp.gmail.com"
                 smtp_port = 587
-                sender_email = "mihocidragosh@gmail.com"       # replace with your Gmail
-                sender_password = "pxfy lirw sxpa axtj"       # Gmail App Password
+                sender_email = "YOUR_GMAIL@gmail.com"       # replace with your Gmail
+                sender_password = "YOUR_APP_PASSWORD"       # Gmail App Password
 
                 # --- SEND TO ADMIN ---
                 msg_admin = MIMEText(admin_message)
@@ -209,8 +190,6 @@ Thank you for choosing EasyBook Pro!
 
             except Exception as e:
                 st.error(f"Error sending emails: {e}")
-
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------
 # ADMIN PANEL
