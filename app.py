@@ -181,7 +181,7 @@ Thank you for choosing EasyBook Pro!
                 # SMTP CONFIG
                 smtp_server = "smtp.gmail.com"
                 smtp_port = 587
-                sender_email = "mihocidragosh@@gmail.com"       # replace with your Gmail
+                sender_email = "mihocidragosh@gmail.com"       # replace with your Gmail
                 sender_password = "pxfy lirw sxpa axtj"       # Gmail App Password
 
                 # --- SEND TO ADMIN ---
