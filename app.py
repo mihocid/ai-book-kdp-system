@@ -1,125 +1,104 @@
 import streamlit as st
 import smtplib
-import uuid
-from datetime import datetime
 from email.mime.text import MIMEText
+from datetime import datetime
+import uuid
 
 # -------------------------
 # PAGE CONFIG
 # -------------------------
-st.set_page_config(page_title="EasyBook Pro", page_icon="📘", layout="wide")
+st.set_page_config(page_title="EasyBook Pro", layout="centered")
 
 # -------------------------
-# CLEAN PROFESSIONAL CSS
+# BACKGROUND IMAGE
 # -------------------------
-st.markdown(
-    """
-    <style>
-    body {
-        background: linear-gradient(135deg, #f5f6fa, #e8e9ff);
-        background-attachment: fixed;
-    }
+background_url = "PASTE_YOUR_RAW_GITHUB_IMAGE_LINK_HERE"  # replace with your uploaded image link
 
-    .card {
-        background-color: rgba(255,255,255,0.95);
-        padding: 15px;
-        border-radius: 12px;
-        box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
-        margin-bottom: 12px;
-    }
+st.markdown(f"""
+<style>
+.stApp {{
+    background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+                url("{background_url}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}}
 
-    .stButton>button {
-        background-color: #4B0082;
-        color: white;
-        border-radius: 8px;
-        padding: 8px 18px;
-        font-size: 16px;
-        font-weight: 600;
-    }
+.main-card {{
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    padding: 2rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    margin-bottom: 20px;
+}}
 
-    .price-box {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background-color: #4B0082;
-        color: white;
-        padding: 12px 18px;
-        border-radius: 10px;
-        font-size: 18px;
-        font-weight: bold;
-        box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+h1 {{
+    text-align: center;
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 0.2em;
+}}
 
-# -------------------------
-# HEADER WITH LOGO
-# -------------------------
-st.markdown(
-    """
-    <div style='text-align:center; padding:20px 0;'>
-        <div style='display:flex; justify-content:center; align-items:center; gap:12px;'>
-            <div style='background:#4B0082; color:white; 
-                        font-size:20px; padding:8px 12px; 
-                        border-radius:8px; font-weight:bold;'>
-                📘
-            </div>
-            <h1 style='font-size:48px; 
-                       background: linear-gradient(90deg, #4B0082, #7B3FE4);
-                       -webkit-background-clip: text;
-                       -webkit-text-fill-color: transparent;
-                       margin:0;'>
-                EasyBook Pro
-            </h1>
-        </div>
-        <h3 style='color:#555; font-weight:400; margin-top:8px;'>
-            From idea to published book — effortlessly.
-        </h3>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+.subtitle {{
+    text-align: center;
+    color: #f1f1f1;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}}
+
+.stButton>button {{
+    background-color: #4B0082;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+}}
+
+.stTextInput input, .stTextArea textarea, .stSelectbox select {{
+    background-color: rgba(255,255,255,0.9);
+}}
+</style>
+""", unsafe_allow_html=True)
 
 # -------------------------
-# SIDEBAR NAVIGATION
+# HEADER
 # -------------------------
-menu = st.sidebar.selectbox("Navigation", ["Place Order", "Admin Panel"])
+st.markdown("<h1>EasyBook Pro</h1>", unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Tell me your idea and I will make it come to life</div>', unsafe_allow_html=True)
 
 # -------------------------
-# PLACE ORDER
+# SIDEBAR MENU
 # -------------------------
-if menu == "Place Order":
+menu = st.sidebar.selectbox("Navigation", ["Order Sample", "Admin Panel"])
 
-    # CLIENT INFO
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
+# -------------------------
+# ORDER SAMPLE
+# -------------------------
+if menu == "Order Sample":
+
+    st.markdown('<div class="main-card">', unsafe_allow_html=True)
+
     st.subheader("👤 Client Information")
     col1, col2 = st.columns(2)
     with col1:
         client_name = st.text_input("Full Name")
     with col2:
         client_email = st.text_input("Email Address")
-    st.markdown("</div>", unsafe_allow_html=True)
 
-    # BOOK IDEA
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("💡 Book Idea")
     idea_option = st.radio(
         "Do you have a book idea?",
         ["Yes, I have an idea", "No, find me a profitable niche"],
         horizontal=True
     )
-
     idea_description = ""
     if idea_option == "Yes, I have an idea":
         idea_description = st.text_area("Describe your idea")
-    st.markdown("</div>", unsafe_allow_html=True)
 
-    # BOOK DETAILS
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("📖 Book Details")
-
     col1, col2, col3 = st.columns(3)
     with col1:
         book_type = st.selectbox("Book Type",
@@ -132,8 +111,7 @@ if menu == "Place Order":
              "Business Strategy", "Personal Finance",
              "Parenting", "Psychology", "Fitness"])
     with col3:
-        word_count = st.selectbox("Word Count",
-            ["5000 words", "7000 words", "10000 words", "20000 words"])
+        word_count = st.selectbox("Word Count for Sample", ["500", "700", "1000"])
 
     col1, col2 = st.columns(2)
     with col1:
@@ -146,52 +124,30 @@ if menu == "Place Order":
              "Futuristic", "Intense"])
 
     extras = st.multiselect("Optional Extras",
-        ["Illustrations", "Workbook Exercises",
-         "Case Studies", "References", "SEO Optimization"])
-    st.markdown("</div>", unsafe_allow_html=True)
+        ["Illustrations", "Workbook Exercises", "Case Studies", "References", "SEO Optimization"])
 
-    # TERMS & PAYMENT
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("💳 Terms & Payment")
-    terms = st.checkbox("I agree to the terms and delivery time (max 7 days).")
-    payment_confirmed = st.checkbox("I confirm payment has been completed (simulated)")
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown('<div style="margin-top:15px;"></div>', unsafe_allow_html=True)
 
-    # PRICE CALCULATION
-    price_map = {
-        "5000 words": 50,
-        "7000 words": 60,
-        "10000 words": 80,
-        "20000 words": 150
-    }
+    st.subheader("📄 Order Your 2-Page Sample")
+    terms = st.checkbox("I understand my 2-page sample will be delivered within 24 hours.")
 
-    price = price_map[word_count]
+    sample_price = 10
+    st.markdown(f"**Price for 2-page sample: £{sample_price}**")
 
-    st.markdown(
-        f"<div class='price-box'>Total: £{price}</div>",
-        unsafe_allow_html=True
-    )
-
-    # SUBMIT BUTTON
-    if st.button("Submit Order"):
+    if st.button("Order Sample"):
 
         if not client_name or not client_email:
             st.error("Please enter your name and email.")
-
         elif not terms:
             st.error("You must accept the terms.")
-
-        elif not payment_confirmed:
-            st.error("Payment confirmation required.")
-
         else:
             try:
                 order_id = str(uuid.uuid4())[:8]
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                # ADMIN EMAIL
+                # ADMIN EMAIL TEMPLATE
                 admin_message = f"""
-NEW ORDER
+NEW SAMPLE ORDER
 Order ID: {order_id}
 Date: {timestamp}
 
@@ -203,54 +159,23 @@ Idea Description: {idea_description}
 
 Book Type: {book_type}
 Genre: {genre}
-Word Count: {word_count}
+Word Count for Sample: {word_count}
 Tone: {tone}
 Atmosphere: {atmosphere}
 Extras: {', '.join(extras)}
 
-Total: £{price}
+Sample Price: £{sample_price}
 """
+                # Here you would send this email to yourself manually or via SMTP
+                # You can keep using the Gmail method you already have
 
-                sender = st.secrets["EMAIL"]
-                password = st.secrets["PASSWORD"]
-
-                msg_admin = MIMEText(admin_message)
-                msg_admin["Subject"] = f"New Order - {order_id}"
-                msg_admin["From"] = sender
-                msg_admin["To"] = sender
-                msg_admin["Reply-To"] = client_email
-
-                # CLIENT EMAIL
-                client_message = f"""
-Hello {client_name},
-
-Thank you for your order!
-
-Order ID: {order_id}
-Total Paid: £{price}
-
-Your book will be delivered within 7 days depending on complexity.
-
-Best regards,
-EasyBook Pro
-"""
-
-                msg_client = MIMEText(client_message)
-                msg_client["Subject"] = f"Order Confirmation - {order_id}"
-                msg_client["From"] = sender
-                msg_client["To"] = client_email
-
-                server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-                server.login(sender, password)
-                server.sendmail(sender, sender, msg_admin.as_string())
-                server.sendmail(sender, client_email, msg_client.as_string())
-                server.quit()
-
-                st.success("✅ Order submitted successfully!")
+                st.success(f"✅ Sample ordered! You will receive it within 24 hours.")
                 st.info(f"Order ID: {order_id}")
 
             except:
-                st.error("Error sending email.")
+                st.error("Error processing your order. Please try again.")
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------
 # ADMIN PANEL
