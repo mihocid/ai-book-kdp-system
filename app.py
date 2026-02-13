@@ -120,6 +120,9 @@ terms = st.checkbox("I agree to the terms and understand delivery can take up to
 
 payment_confirmed = st.checkbox("I confirm payment has been completed.")
 
+elif not payment_confirmed:
+    st.error("Payment confirmation required.")
+
 # -------------------------
 # SUBMIT BUTTON
 # -------------------------
