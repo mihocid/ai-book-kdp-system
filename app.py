@@ -62,8 +62,8 @@ Tone: {tone}
     msg["Subject"] = "New Book Order"
 msg["From"] = sender
 msg["To"] = receiver
-msg["Reply-To"] = client_email
-    server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+msg["Reply-To"] = client_email 
+    server =         smtplib.SMTP_SSL("smtp.gmail.com", 465)
     server.login(sender, password)
     server.sendmail(sender, receiver, msg.as_string())
     server.quit()
