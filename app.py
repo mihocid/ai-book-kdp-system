@@ -79,6 +79,20 @@ st.markdown(
 # -------------------------
 menu = st.sidebar.selectbox("Navigation", ["Place Order", "Admin Panel"])
 
+st.markdown(
+    """
+    <div style='text-align:center; padding:20px 0;'>
+        <h1 style='font-size:55px; color:#4B0082; margin-bottom:5px;'>
+            EasyBook Pro
+        </h1>
+        <h3 style='color:gray; font-weight:400; margin-top:0;'>
+            From idea to published book — effortlessly.
+        </h3>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 # -------------------------
 # PLACE ORDER FORM
 # -------------------------
