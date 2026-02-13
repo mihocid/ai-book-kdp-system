@@ -118,6 +118,8 @@ st.markdown(
 
 terms = st.checkbox("I agree to the terms and understand delivery can take up to 7 days depending on complexity.")
 
+payment_confirmed = st.checkbox("I confirm payment has been completed.")
+
 # -------------------------
 # SUBMIT BUTTON
 # -------------------------
