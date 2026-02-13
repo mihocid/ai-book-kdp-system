@@ -4,9 +4,9 @@ import uuid
 from datetime import datetime
 from email.mime.text import MIMEText
 
-st.set_page_config(page_title="AI Book Creation System", layout="centered")
+st.set_page_config(page_title="AI Book Creation Service", layout="wide")
 
-st.title("📚 AI Book Creation Intake Form")
+st.title("📚 AI Book Creation Service")
 
 # -------------------------
 # CLIENT INFORMATION
@@ -17,7 +17,7 @@ client_name = st.text_input("Full Name")
 client_email = st.text_input("Email Address")
 
 # -------------------------
-# IDEA SECTION
+# BOOK IDEA
 # -------------------------
 st.header("Book Idea")
 
@@ -28,7 +28,7 @@ idea_option = st.radio(
 
 idea_description = ""
 if idea_option == "Yes, I have an idea":
-    idea_description = st.text_area("Describe your idea (2-3 sentences)")
+    idea_description = st.text_area("Describe your idea")
 
 # -------------------------
 # BOOK DETAILS
@@ -51,14 +51,33 @@ book_type = st.selectbox(
     ]
 )
 
-genre = st.text_input("Genre")
-
-length = st.selectbox(
-    "Length",
+genre = st.selectbox(
+    "Genre",
     [
-        "Short (10k-20k words)",
-        "Medium (30k-60k words)",
-        "Long (80k+ words)"
+        "Fantasy",
+        "Sci-Fi",
+        "Romance",
+        "Thriller",
+        "Mystery",
+        "Horror",
+        "Historical Fiction",
+        "Self-Improvement",
+        "Business Strategy",
+        "Personal Finance",
+        "Parenting",
+        "Psychology",
+        "Fitness",
+        "Entrepreneurship"
+    ]
+)
+
+word_count = st.selectbox(
+    "Word Count",
+    [
+        "5000 words",
+        "7000 words",
+        "10000 words",
+        "20000 words"
     ]
 )
 
@@ -74,51 +93,35 @@ tone = st.selectbox(
     ]
 )
 
-atmosphere = st.selectbox(
-    "Atmosphere",
-    [
-        "Cozy",
-        "Suspenseful",
-        "Epic",
-        "Realistic",
-        "Futuristic",
-        "Intense"
-    ]
+# -------------------------
+# PRICE CALCULATION
+# -------------------------
+
+price_map = {
+    "5000 words": 50,
+    "7000 words": 60,
+    "10000 words": 80,
+    "20000 words": 150
+}
+
+price = price_map[word_count]
+
+st.markdown("---")
+st.markdown(
+    f"""
+    <div style='text-align:right; font-size:22px; font-weight:bold;'>
+    Total Price: £{price}
+    </div>
+    """,
+    unsafe_allow_html=True
 )
 
-audience = st.selectbox(
-    "Target Audience",
-    [
-        "Children (3-7)",
-        "Middle Grade (8-12)",
-        "Teens (13-17)",
-        "Adults (18-40)",
-        "40+",
-        "Seniors"
-    ]
-)
-
-extras = st.multiselect(
-    "Extras (Optional)",
-    [
-        "Illustrations",
-        "Workbook Exercises",
-        "Case Studies",
-        "Dialogue Heavy",
-        "Fast Paced",
-        "References",
-        "SEO Optimization"
-    ]
-)
-
-deadline = st.date_input("Deadline (Optional)")
-budget = st.text_input("Budget (Optional)")
-
-terms = st.checkbox("I agree to be contacted regarding this project")
+terms = st.checkbox("I agree to the terms and understand delivery can take up to 7 days depending on complexity.")
 
 # -------------------------
 # SUBMIT BUTTON
 # -------------------------
+
 if st.button("Submit Order"):
 
     if not client_name or not client_email:
@@ -130,68 +133,79 @@ if st.button("Submit Order"):
             order_id = str(uuid.uuid4())[:8]
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            prompt = f"""
+            # -------- EMAIL TO YOU --------
+            admin_message = f"""
 NEW BOOK ORDER
-=========================
+====================
 
 Order ID: {order_id}
 Submitted: {timestamp}
 
-CLIENT DETAILS
---------------
-Name: {client_name}
-Email: {client_email}
+Client Name: {client_name}
+Client Email: {client_email}
 
-BOOK SPECIFICATIONS
--------------------
 Idea Option: {idea_option}
 Idea Description: {idea_description}
 
 Book Type: {book_type}
 Genre: {genre}
-Length: {length}
+Word Count: {word_count}
 Tone: {tone}
-Atmosphere: {atmosphere}
-Target Audience: {audience}
 
-Extras: {', '.join(extras)}
+Total Price: £{price}
 
-Deadline: {deadline}
-Budget: {budget}
-
-=========================
-
-AI BOOK CREATION INSTRUCTIONS:
-
-Create a professionally structured, commercially viable Amazon KDP book based on the specifications above.
-
-Include:
-- Structured chapter outline
-- Strong hook
-- Market positioning
-- SEO optimized title ideas
-- Amazon keywords
-- Category suggestions
-- Back cover description
+====================
 """
 
             sender = st.secrets["EMAIL"]
             password = st.secrets["PASSWORD"]
             receiver = st.secrets["EMAIL"]
 
-            msg = MIMEText(prompt)
-            msg["Subject"] = f"New Book Order - {order_id}"
-            msg["From"] = sender
-            msg["To"] = receiver
-            msg["Reply-To"] = client_email
+            msg_admin = MIMEText(admin_message)
+            msg_admin["Subject"] = f"New Order - {order_id}"
+            msg_admin["From"] = sender
+            msg_admin["To"] = receiver
+            msg_admin["Reply-To"] = client_email
+
+            # -------- EMAIL TO CLIENT --------
+            client_message = f"""
+Hello {client_name},
+
+Thank you for your order!
+
+Order ID: {order_id}
+
+Book Type: {book_type}
+Genre: {genre}
+Word Count: {word_count}
+Tone: {tone}
+
+Total Paid: £{price}
+
+Your book will be delivered within a maximum of 7 days.
+Delivery time may vary depending on complexity.
+
+We will contact you if further clarification is needed.
+
+Best regards,
+AI Book Creation Service
+"""
+
+            msg_client = MIMEText(client_message)
+            msg_client["Subject"] = f"Order Confirmation - {order_id}"
+            msg_client["From"] = sender
+            msg_client["To"] = client_email
 
             server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
             server.login(sender, password)
-            server.sendmail(sender, receiver, msg.as_string())
+
+            server.sendmail(sender, receiver, msg_admin.as_string())
+            server.sendmail(sender, client_email, msg_client.as_string())
+
             server.quit()
 
             st.success("✅ Order submitted successfully!")
-            st.info(f"Your Order ID is: {order_id}")
+            st.info(f"Order ID: {order_id}")
 
-        except Exception as e:
-            st.error("Something went wrong while sending the email.")
+        except Exception:
+            st.error("Something went wrong while sending emails.")
