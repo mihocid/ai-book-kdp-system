@@ -1,71 +1,83 @@
+import streamlit as st
+import smtplib
+import uuid
+from datetime import datetime
+from email.mime.text import MIMEText
+
+st.set_page_config(page_title="AI Book Creation System", layout="centered")
+
+st.title("📚 AI Book Creation Intake Form")
+
+# -------------------------
+# CLIENT INFORMATION
+# -------------------------
 st.header("Client Information")
 
 client_name = st.text_input("Full Name")
 client_email = st.text_input("Email Address")
 
-import streamlit as st
-import smtplib
-from email.mime.text import MIMEText
-
-st.title("📚 AI Book Creation Intake Form")
+# -------------------------
+# IDEA SECTION
+# -------------------------
+st.header("Book Idea")
 
 idea_option = st.radio(
     "Do you have a book idea?",
-    ["Yes", "No, find me a niche"]
+    ["Yes, I have an idea", "No, find me a profitable niche"]
 )
 
 idea_description = ""
-if idea_option == "Yes":
-    idea_description = st.text_area("Describe your idea")
+if idea_option == "Yes, I have an idea":
+    idea_description = st.text_area("Describe your idea (2-3 sentences)")
+
+# -------------------------
+# BOOK DETAILS
+# -------------------------
+st.header("Book Details")
 
 book_type = st.selectbox(
     "Book Type",
-    ["Fiction", "Non-Fiction", "Children", "Self-Help", "Business", "Low Content"]
+    [
+        "Fiction",
+        "Non-Fiction",
+        "Children",
+        "Young Adult",
+        "Self-Help",
+        "Business",
+        "Health & Fitness",
+        "Cookbook",
+        "Workbook",
+        "Low Content"
+    ]
 )
 
 genre = st.text_input("Genre")
 
 length = st.selectbox(
     "Length",
-    ["Short", "Medium", "Long"]
+    [
+        "Short (10k-20k words)",
+        "Medium (30k-60k words)",
+        "Long (80k+ words)"
+    ]
 )
 
 tone = st.selectbox(
     "Tone",
-    ["Dark", "Inspirational", "Humorous", "Serious", "Emotional"]
+    [
+        "Dark",
+        "Inspirational",
+        "Humorous",
+        "Serious",
+        "Emotional",
+        "Academic"
+    ]
 )
-terms = st.checkbox("I agree to be contacted regarding this project")
-if not terms:
-    st.error("You must accept terms.")
-if st.button("Submit"):
-    if not client_name or not client_email:
-        st.error("Please enter your name and email.")
-else:
-    prompt = f"""
-NEW BOOK ORDER
 
-Client Name: {client_name}
-Client Email: {client_email}
-
-Book Idea: {idea_description}
-Type: {book_type}
-Genre: {genre}
-Length: {length}
-Tone: {tone}
-"""
-
-    sender = st.secrets["EMAIL"]
-    password = st.secrets["PASSWORD"]
-    receiver = st.secrets["EMAIL"]
-
-    msg = MIMEText(prompt)
-    msg["Subject"] = "New Book Order"
-msg["From"] = sender
-msg["To"] = receiver
-msg["Reply-To"] = client_email 
-server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-    server.login(sender, password)
-    server.sendmail(sender, receiver, msg.as_string())
-    server.quit()
-
-    st.success("Submitted successfully!")
+atmosphere = st.selectbox(
+    "Atmosphere",
+    [
+        "Cozy",
+        "Suspenseful",
+        "Epic",
+        "Realistic",
