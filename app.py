@@ -10,56 +10,46 @@ import uuid
 st.set_page_config(page_title="EasyBook Pro", layout="centered")
 
 # -------------------------
-# BACKGROUND IMAGE
+# STYLING (GLASS CARDS, BUTTONS, TITLE)
 # -------------------------
-background_url = "PASTE_YOUR_RAW_GITHUB_IMAGE_LINK_HERE"  # replace with your uploaded image link
-
-st.markdown(f"""
+st.markdown("""
 <style>
-.stApp {{
-    background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
-                url("{background_url}");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}}
-
-.main-card {{
+.main-card {
     background: rgba(255,255,255,0.08);
     backdrop-filter: blur(12px);
     padding: 2rem;
     border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.2);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     margin-bottom: 20px;
-}}
+}
 
-h1 {{
+h1 {
     text-align: center;
-    color: white;
+    color: #4B0082;
     font-size: 3rem;
     margin-bottom: 0.2em;
-}}
+}
 
-.subtitle {{
+.subtitle {
     text-align: center;
-    color: #f1f1f1;
+    color: #555;
     font-size: 1.2rem;
     margin-bottom: 2rem;
-}}
+}
 
-.stButton>button {{
+.stButton>button {
     background-color: #4B0082;
     color: white;
     border-radius: 8px;
     padding: 10px 20px;
     font-size: 16px;
     font-weight: 600;
-}}
+}
 
-.stTextInput input, .stTextArea textarea, .stSelectbox select {{
+.stTextInput input, .stTextArea textarea, .stSelectbox select {
     background-color: rgba(255,255,255,0.9);
-}}
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -81,6 +71,7 @@ if menu == "Order Sample":
 
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
 
+    # CLIENT INFO
     st.subheader("👤 Client Information")
     col1, col2 = st.columns(2)
     with col1:
@@ -88,6 +79,7 @@ if menu == "Order Sample":
     with col2:
         client_email = st.text_input("Email Address")
 
+    # BOOK IDEA
     st.subheader("💡 Book Idea")
     idea_option = st.radio(
         "Do you have a book idea?",
@@ -98,6 +90,7 @@ if menu == "Order Sample":
     if idea_option == "Yes, I have an idea":
         idea_description = st.text_area("Describe your idea")
 
+    # BOOK DETAILS
     st.subheader("📖 Book Details")
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -126,8 +119,7 @@ if menu == "Order Sample":
     extras = st.multiselect("Optional Extras",
         ["Illustrations", "Workbook Exercises", "Case Studies", "References", "SEO Optimization"])
 
-    st.markdown('<div style="margin-top:15px;"></div>', unsafe_allow_html=True)
-
+    # SAMPLE ORDER
     st.subheader("📄 Order Your 2-Page Sample")
     terms = st.checkbox("I understand my 2-page sample will be delivered within 24 hours.")
 
@@ -167,7 +159,7 @@ Extras: {', '.join(extras)}
 Sample Price: £{sample_price}
 """
                 # Here you would send this email to yourself manually or via SMTP
-                # You can keep using the Gmail method you already have
+                # Using your Gmail method or other email service
 
                 st.success(f"✅ Sample ordered! You will receive it within 24 hours.")
                 st.info(f"Order ID: {order_id}")
