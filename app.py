@@ -71,8 +71,8 @@ if menu == "Order Sample":
 
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
 
-    # CLIENT INFO
-    st.subheader("👤 Client Information")
+    # CONTACT DETAILS
+    st.subheader("📇 Contact Details")
     col1, col2 = st.columns(2)
     with col1:
         client_name = st.text_input("Full Name")
@@ -137,7 +137,7 @@ if menu == "Order Sample":
                 order_id = str(uuid.uuid4())[:8]
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                # ADMIN EMAIL TEMPLATE
+                # ADMIN EMAIL
                 admin_message = f"""
 NEW SAMPLE ORDER
 Order ID: {order_id}
@@ -158,14 +158,57 @@ Extras: {', '.join(extras)}
 
 Sample Price: £{sample_price}
 """
-                # Here you would send this email to yourself manually or via SMTP
-                # Using your Gmail method or other email service
+                # CLIENT EMAIL
+                client_message = f"""
+Hi {client_name},
+
+Thank you for submitting your book idea!
+
+Your 2-page sample will be delivered within 24 hours. We will email you as soon as it’s ready.
+
+Here is a summary of your submission:
+
+Book Type: {book_type}
+Genre: {genre}
+Word Count for Sample: {word_count}
+Tone: {tone}
+Atmosphere: {atmosphere}
+Extras: {', '.join(extras)}
+
+Thank you for choosing EasyBook Pro!
+"""
+
+                # SMTP CONFIG
+                smtp_server = "smtp.gmail.com"
+                smtp_port = 587
+                sender_email = "mihocidragosh@@gmail.com"       # replace with your Gmail
+                sender_password = "pxfy lirw sxpa axtj"       # Gmail App Password
+
+                # --- SEND TO ADMIN ---
+                msg_admin = MIMEText(admin_message)
+                msg_admin['Subject'] = f"New EasyBook Sample Order: {order_id}"
+                msg_admin['From'] = sender_email
+                msg_admin['To'] = sender_email
+
+                # --- SEND TO CLIENT ---
+                msg_client = MIMEText(client_message)
+                msg_client['Subject'] = f"Your EasyBook 2-Page Sample Order: {order_id}"
+                msg_client['From'] = sender_email
+                msg_client['To'] = client_email
+
+                # Connect SMTP server
+                server = smtplib.SMTP(smtp_server, smtp_port)
+                server.starttls()
+                server.login(sender_email, sender_password)
+                server.sendmail(sender_email, sender_email, msg_admin.as_string())
+                server.sendmail(sender_email, client_email, msg_client.as_string())
+                server.quit()
 
                 st.success(f"✅ Sample ordered! You will receive it within 24 hours.")
                 st.info(f"Order ID: {order_id}")
 
-            except:
-                st.error("Error processing your order. Please try again.")
+            except Exception as e:
+                st.error(f"Error sending emails: {e}")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
