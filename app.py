@@ -41,7 +41,6 @@ if st.button("Submit"):
     if not client_name or not client_email:
         st.error("Please enter your name and email.")
     else:
-
     prompt = f"""
 NEW BOOK ORDER
 
