@@ -1,3 +1,8 @@
+st.header("Client Information")
+
+client_name = st.text_input("Full Name")
+client_email = st.text_input("Email Address")
+
 import streamlit as st
 import smtplib
 from email.mime.text import MIMEText
@@ -29,16 +34,26 @@ tone = st.selectbox(
     "Tone",
     ["Dark", "Inspirational", "Humorous", "Serious", "Emotional"]
 )
-
+terms = st.checkbox("I agree to be contacted regarding this project")
+if not terms:
+    st.error("You must accept terms.")
 if st.button("Submit"):
+    if not client_name or not client_email:
+        st.error("Please enter your name and email.")
+    else:
 
     prompt = f"""
-    Book Idea: {idea_description}
-    Type: {book_type}
-    Genre: {genre}
-    Length: {length}
-    Tone: {tone}
-    """
+NEW BOOK ORDER
+
+Client Name: {client_name}
+Client Email: {client_email}
+
+Book Idea: {idea_description}
+Type: {book_type}
+Genre: {genre}
+Length: {length}
+Tone: {tone}
+"""
 
     sender = st.secrets["EMAIL"]
     password = st.secrets["PASSWORD"]
@@ -46,7 +61,9 @@ if st.button("Submit"):
 
     msg = MIMEText(prompt)
     msg["Subject"] = "New Book Order"
-
+msg["From"] = sender
+msg["To"] = receiver
+msg["Reply-To"] = client_email
     server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
     server.login(sender, password)
     server.sendmail(sender, receiver, msg.as_string())
